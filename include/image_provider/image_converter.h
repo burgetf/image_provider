@@ -171,6 +171,9 @@ public:
     //TODO -> exchange message type to vector or whatever
     void receivedObjects(const image_provider::interface_msg& msg)
     {
+        //Reset Confirm trigger flag
+        confirm_triggered_ = false;
+
         //Set the number of objects received (num_objects_)
         num_objects_ = msg.objects.size();
 

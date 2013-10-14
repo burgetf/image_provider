@@ -76,11 +76,26 @@ include_directories(
   include ${catkin_INCLUDE_DIRS}
 )
 
+
+
+#Project Files
+set(image_provider_files
+
+#CPP Files
+src/image_converter.cpp
+
+#Header files (added only for visualization in QtCreator)
+include/image_provider/image_converter.h
+
+)
+
+
 ## Declare a cpp library
 # add_library(image_provider
 #   src/${PROJECT_NAME}/image_provider.cpp
 # )
-add_library(${PROJECT_NAME} src/image_converter.cpp)
+add_library(${PROJECT_NAME} ${image_provider_files})
+
 
 ## Declare a cpp executable
 # add_executable(image_provider_node src/image_provider_node.cpp)
@@ -95,6 +110,8 @@ add_executable(image_provider_node src/image_provider_node.cpp)
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(image_provider_node ${catkin_LIBRARIES})
+
+
 
 #############
 ## Install ##
