@@ -44,6 +44,9 @@ class ImageConverter
   //Size of Image
   int im_width_, im_height_;
 
+  //Number of white pixels in current and last processed image, used to detect changes in scene
+  int current_nonzero_;
+  int last_nonzero_;
   
 public:
   ImageConverter()
@@ -116,10 +119,27 @@ public:
          ROS_INFO("Image heigth [%i]",  im_height_);
      }
 
-     //cv::cvtColor(cv_ptr->image, cv_ptr->image, CV_BGR2HSV);
-     //cv::inRange(cv_ptr->image, cv::Scalar(0,0,0), cv::Scalar(0,0,255), cv_ptr->image);
-     //ROS_INFO("%d", cv::countNonZero(cv_ptr->image));
-     //cv::cvtColor(cv_ptr->image, cv_ptr->image, CV_GRAY2RGB);
+     // Process the image to a binary image where (mostly) only cubes are white.
+     cv::Mat procImg = cv_ptr->image;
+     //cv::cvtColor(procImg, procImg, CV_BGR2HSV);
+     cv::inRange(procImg, cv::Scalar(0,0,100), cv::Scalar(50,100,255), procImg);
+     cv::GaussianBlur(procImg, procImg, cv::Size(25,25), 2, 2);
+     cv::threshold(procImg, procImg, 210, 255, cv::THRESH_BINARY);
+     //ROS_INFO("%d", current_nonzero_);
+     //ROS_INFO("%d", abs(current_nonzero_-last_nonzero_));
+     //cv::cvtColor(procImg, cv_ptr->image, CV_GRAY2RGB);  // uncomment to publish processed image
+
+     // Count number of white pixels. If the difference to the last image is greater than a threshold, initiate rescan.
+     current_nonzero_ = cv::countNonZero(procImg);
+     if (last_nonzero_ != 0 && abs(current_nonzero_-last_nonzero_) >= 1500)
+     {
+         confirm_triggered_ = true;
+         std_msgs::Int32 object_id_msg;
+         object_id_msg.data = -1;
+         ROS_INFO("Rescan for new object configuration.");
+         object_id_pub_.publish(object_id_msg);
+     }
+     last_nonzero_ = current_nonzero_;
 
      //If Confirm hasn't been send so far
      if (confirm_triggered_ == false)
