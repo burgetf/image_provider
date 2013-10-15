@@ -116,6 +116,11 @@ public:
          ROS_INFO("Image heigth [%i]",  im_height_);
      }
 
+     //cv::cvtColor(cv_ptr->image, cv_ptr->image, CV_BGR2HSV);
+     //cv::inRange(cv_ptr->image, cv::Scalar(0,0,0), cv::Scalar(0,0,255), cv_ptr->image);
+     //ROS_INFO("%d", cv::countNonZero(cv_ptr->image));
+     //cv::cvtColor(cv_ptr->image, cv_ptr->image, CV_GRAY2RGB);
+
      //If Confirm hasn't been send so far
      if (confirm_triggered_ == false)
      {
@@ -157,6 +162,22 @@ public:
          std_msgs::Int32 object_id_msg;
          object_id_msg.data = planning_id_;
          ROS_INFO("Confirm selection of object with ID: [%d]", object_id_msg.data);
+         object_id_pub_.publish(object_id_msg);
+     }
+     else if (command == "Rescan")
+     {
+         confirm_triggered_ = true;
+         std_msgs::Int32 object_id_msg;
+         object_id_msg.data = -1;
+         ROS_INFO("Rescan for new object configuration.");
+         object_id_pub_.publish(object_id_msg);
+     }
+     else if (command == "Quit")
+     {
+         confirm_triggered_ = true;
+         std_msgs::Int32 object_id_msg;
+         object_id_msg.data = -2;
+         ROS_INFO("Quit program.");
          object_id_pub_.publish(object_id_msg);
      }
      else
