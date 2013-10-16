@@ -166,7 +166,7 @@ public:
 
      std::stringstream s;
      s<<"../../../Pictures/cam_images/"<<numimage_<<".png";
-     cv::imwrite(s.str().c_str(),  procImg);
+     cv::imwrite(s.str().c_str(),  cv_ptr->image);
      //numimage_++;
 
      //Publish new image
