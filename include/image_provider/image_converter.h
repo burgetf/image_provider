@@ -10,6 +10,10 @@
 #include "image_provider/interface_msg.h"
 
 
+#include <sstream>
+
+
+
 namespace enc = sensor_msgs::image_encodings;
 
 //static const char WINDOW[] = "Image window";
@@ -47,6 +51,9 @@ class ImageConverter
   //Number of white pixels in current and last processed image, used to detect changes in scene
   int current_nonzero_;
   int last_nonzero_;
+
+
+  int numimage_;
   
 public:
   ImageConverter()
@@ -85,6 +92,8 @@ public:
     im_height_ = 0;
     im_width_ = 0;
 
+
+    numimage_ = 0;
 
     //cv::namedWindow(WINDOW);
   }
@@ -153,6 +162,12 @@ public:
 
      //cv::imshow(WINDOW, cv_ptr->image);
      cv::waitKey(3);
+
+
+     std::stringstream s;
+     s<<"../../../Pictures/cam_images/"<<numimage_<<".png";
+     cv::imwrite(s.str().c_str(),  procImg);
+     //numimage_++;
 
      //Publish new image
      image_pub_.publish(cv_ptr->toImageMsg());
