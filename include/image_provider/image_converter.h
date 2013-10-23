@@ -170,6 +170,7 @@ public:
      cv::imwrite(s.str().c_str(),  cv_ptr->image);
      //numimage_++;
 
+
      //Publish new image
      image_pub_.publish(cv_ptr->toImageMsg());
    }
